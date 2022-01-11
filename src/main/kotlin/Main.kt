@@ -9,6 +9,7 @@ class Main {
         private val scanner = Scanner(System.`in`)
         private var wordBank: List<Word> = emptyList()
         private var guess: String = ""
+        private var attempt = 1
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -27,22 +28,20 @@ class Main {
                 println("ERROR: ${e.message}")
             }
 
-            var guess = 1
             while (wordBank.size > 1) {
                 println("${wordBank.size} possible words")
-                println("Guess #$guess: ${makeGuess()}")
-
+                makeGuess()
                 filter(receiveGuess())
-                guess += 1
+                attempt+=1
             }
             if (wordBank.size == 1) {
-                println("Final guess: ${makeGuess()}")
+                println("Final guess: ${wordBank.first().word}")
             }
         }
 
-        private fun makeGuess(): String {
-            guess = wordBank.sortedByDescending { it.position_weight }.first().word
-            return guess
+        private fun makeGuess(index:Int = 0) {
+            guess = wordBank.sortedByDescending { it.position_weight }[index].word
+            println("Guess #$attempt: $guess")
         }
 
         private fun filter(response: List<State>) {
@@ -61,6 +60,7 @@ class Main {
             }
         }
 
+        //Handle words with multiples of the same letter
         private fun eliminate(char: Char, response: List<State>): List<Word> {
             var count = 0
             response.forEachIndexed { index, answer ->
@@ -76,6 +76,7 @@ class Main {
         }
 
         private fun receiveGuess(): List<State> {
+            var skips = 0
             while (true) {
                 val input = scanner.nextLine().lowercase()
                 if (input.length >= 5) {
@@ -86,6 +87,11 @@ class Main {
                         getAnswer(input[3]),
                         getAnswer(input[4])
                     )
+                }else if(input == "skip"){
+                    //for testing on http://foldr.moe/hello-wordl/#
+                    //skipping is necessary because it has a smaller word bank
+                    skips+=1
+                    makeGuess(skips)
                 }
             }
         }
