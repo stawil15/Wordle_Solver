@@ -1,0 +1,1 @@
+data class Response(val one: Answer, val two: Answer, val three: Answer, val four: Answer, val five: Answer)
