@@ -32,16 +32,27 @@ class Main {
                 println("${wordBank.size} possible words")
                 makeGuess()
                 filter(receiveGuess())
-                attempt+=1
+                attempt += 1
             }
             if (wordBank.size == 1) {
-                println("Final guess: ${wordBank.first().word}")
+                println("Final guess: ${wordBank.first().word.uppercase()}")
             }
         }
 
-        private fun makeGuess(index:Int = 0) {
-            guess = wordBank.sortedByDescending { it.position_weight }[index].word
-            println("Guess #$attempt: $guess")
+        private fun makeGuess(index: Int = 0) {
+            if (attempt == 1) {
+                guess = "unlay"
+            }
+            else if (attempt == 2) {
+                guess = "forks"
+            }
+            else if(attempt == 3){
+                guess = "imped"
+            }
+            else {
+                guess = wordBank.sortedByDescending { it.letter_weight }[index].word
+            }
+            println("Guess #$attempt: ${guess.uppercase()}")
         }
 
         private fun filter(response: List<State>) {
@@ -69,7 +80,7 @@ class Main {
                 }
             }
             return if (count == 0) {
-                wordBank.filterNot { it.a == char || it.b == char || it.c == char || it.d == char || it.e == char }
+                wordBank.filterNot { it.word.contains(char, true) }
             } else {
                 wordBank.filterNot { it.word.count { it == char } > count }
             }
@@ -87,10 +98,10 @@ class Main {
                         getAnswer(input[3]),
                         getAnswer(input[4])
                     )
-                }else if(input == "skip"){
+                } else if (input == "skip") {
                     //for testing on http://foldr.moe/hello-wordl/#
                     //skipping is necessary because it has a smaller word bank
-                    skips+=1
+                    skips += 1
                     makeGuess(skips)
                 }
             }
@@ -114,11 +125,6 @@ class Main {
                         content.add(
                             Word(
                                 this[0],
-                                this[1][0],
-                                this[2][0],
-                                this[3][0],
-                                this[4][0],
-                                this[5][0],
                                 this[6].toInt(),
                                 this[7].toInt(),
                                 this[8].toInt()

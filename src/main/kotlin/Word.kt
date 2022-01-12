@@ -1,1 +1,1 @@
-data class Word(val word: String, val a: Char, val b: Char, val c: Char, val d: Char, val e: Char, val letter_weight: Int, val position_weight: Int, val sum_value: Int)
+data class Word(val word: String, val letter_weight: Int, val position_weight: Int, val sum_value: Int)
